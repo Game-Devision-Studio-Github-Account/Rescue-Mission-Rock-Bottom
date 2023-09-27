@@ -8,6 +8,9 @@ public class PlayerMovement : MonoBehaviour
     
     public Rigidbody2D rb;
     public CircleCollider2D cc;
+    ScriptAnimator sa;
+    public Animator anim;
+    public SpriteRenderer sprite;
 
     public enum State {
         //State when attached to ground or walls.
@@ -36,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
     public KeyCode downInput = KeyCode.S;
     //The Vector2 of the directional inputs. Set in Update.
     Vector2 directionalInput;  
+    Vector2 trueDirectionalInput;
     //The key needed to input Jump.
     public KeyCode jumpInput = KeyCode.Space;
     //The key needed to input a Ground Pound
@@ -48,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
     public float airSpeed = 3f;
     //Which layer is the ground?
     public LayerMask groundMask;
+    //The amount of objects in the groundMask layer(s) that the slime is colliding with.
+    int groundCount = 0;
     //Normal of the ground.
     public Vector2 groundNormal;
     //How far out to detect ground. If less than.
@@ -62,6 +68,10 @@ public class PlayerMovement : MonoBehaviour
     //The time, in seconds, it takes for a jump to charge.
     public float jumpChargeTime;
     float jumpChargeAmount;
+    bool jump = false;
+    //The time, in sections, to manually reset the jump variable if the ground has not been left.
+    public float jumpResetTime = 0.1f;
+    float jumpResetTimer;
 
     [Header("Ground Pound")]
     public float groundPoundGravityScale = 2f;
@@ -72,6 +82,11 @@ public class PlayerMovement : MonoBehaviour
     public float rotationLerp = 0.2f;
     public TrailRenderer slimeTrail;
 
+    [Header("Animation")]
+    public string idleAnim = "Idle";
+    public string jumpChargeAnim = "JumpCharge";
+    public string groundPoundAnim = "GroundPound";
+
 
     // Start is called before the first frame update
     void Start()
@@ -81,8 +96,22 @@ public class PlayerMovement : MonoBehaviour
             rb = GetComponent<Rigidbody2D>();
         }
 
-        if (cc==null) {
+        if (cc == null) {
             cc = GetComponent<CircleCollider2D>();
+        }
+
+        if (anim == null) {
+            anim = GetComponent<Animator>();
+
+            if (anim == null) {
+                Debug.LogError("Assign an Animator to PlayerMovement.");
+            }
+        }
+
+        sa = new ScriptAnimator(anim);
+
+        if (sprite == null) {
+            sprite = GetComponentInChildren<SpriteRenderer>();
         }
 
         //Defaults the state to Air since OnCollisionExit can't run on frame 1.
@@ -94,14 +123,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //Checks if neither the left or right keys are being pressed.
         if (!(Input.GetKey(leftInput) || Input.GetKey(rightInput))) {
-            currentLeftInput = leftInput;
-            currentRightInput = rightInput;
-
-            //Checks if the player is upside-down and on a surface.
-            if (state == State.Ground && UpsideDown()) {
-                currentLeftInput = rightInput;
-                currentRightInput = leftInput;
-            }
+            AdjustHorizontalInput();
         }
 
         //Sets directionalInput every frame, so I don't have to bother with setting it.
@@ -121,25 +143,92 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void AdjustHorizontalInput() {
+        currentLeftInput = leftInput;
+        currentRightInput = rightInput;
+
+        //Checks if the player is upside-down and on a surface.
+        if (state == State.Ground && UpsideDown()) {
+            currentLeftInput = rightInput;
+            currentRightInput = leftInput;
+        }
+    }
+
     //Creates a Vector2 from the players movement inputs.
     //I miss the new input system already.
     void SetInputVector() {
         directionalInput = Vector2.zero;
+        trueDirectionalInput = Vector2.zero;
 
         if (Input.GetKey(currentLeftInput)) directionalInput += Vector2.left;
         if (Input.GetKey(currentRightInput)) directionalInput += Vector2.right;
         if (Input.GetKey(upInput)) directionalInput += Vector2.up;
         if (Input.GetKey(downInput)) directionalInput += Vector2.down;
+
+        if (Input.GetKey(leftInput)) trueDirectionalInput += Vector2.left;
+        if (Input.GetKey(rightInput)) trueDirectionalInput += Vector2.right;
+        if (Input.GetKey(upInput)) trueDirectionalInput += Vector2.up;
+        if (Input.GetKey(downInput)) trueDirectionalInput += Vector2.down;
     }
     
     //Runs 50 times per frame, no matter what. Eliminates the need for deltaTime.
     void FixedUpdate()
-    {
-        if (slimeTrail != null) slimeTrail.emitting = (state == State.Ground);
+    { 
+        if (jump) {
+            jumpResetTimer -= Time.fixedDeltaTime;
+            if (jumpResetTimer <= 0) jump = false;
+        }
+        
+
+        if (groundCount == 0 && state != State.GroundPound) {
+            
+            if (state == State.Ground) {
+                RaycastHit2D gc = Physics2D.CircleCast(rb.position + (rb.velocity * Time.fixedDeltaTime), cc.radius + 0.01f + groundCastRadius, Vector2.zero, 0, groundMask);
+
+                if (gc == false) {
+                    state = State.Air;
+                    return;
+                }
+
+                rb.MovePosition(gc.point);
+                rb.velocity = rb.velocity.magnitude * (Vector2.Perpendicular(groundNormal).normalized * ((Mathf.Abs(Vector2.Angle(rb.velocity, Vector2.Perpendicular(groundNormal))) < 90) ? 1 : -1));
+
+                return;
+            }
+            
+            jump = false;
+            state = State.Air;
+
+        } else {
+            bool a = false;
+
+            if (state != State.Ground) {
+                a = true;
+            }
+
+            if (state != State.JumpCharge && state != State.GroundPound && !jump) {
+                state = State.Ground;
+
+                if (a) {
+                    AdjustHorizontalInput();
+                }
+            }
+            
+        }
 
         switch(state) {
             case State.Ground:
             default:
+                sa.SetState(idleAnim);
+
+                if (directionalInput.x != 0) {
+                    sprite.transform.localScale = new Vector2(
+                        directionalInput.x > 0 ? 1 : -1,
+                        sprite.transform.localScale.y
+                    );
+                }
+                
+
                 Magnetize();
 
                 //Sets gravity to 0 so the slime doesn't fall away from walls.
@@ -150,13 +239,12 @@ public class PlayerMovement : MonoBehaviour
                     rb.AddForce(Vector2.Perpendicular(groundNormal) * -directionalInput.x * speed);
                 }
 
-                /*rb.AddForce(-groundNormal);*/
-
                 //Rotates so it appears to be "on the ground."
-                RotateTowards(Quaternion.FromToRotation(Vector2.up, groundNormal));
+                RotateFloor();
 
                 break;
             case State.Air:
+                sa.SetState(idleAnim);
                 Magnetize();
 
                 //Sets gravity to 1 to allow the slime to fall.
@@ -172,14 +260,16 @@ public class PlayerMovement : MonoBehaviour
 
                 break;
             case State.JumpCharge:
+                sa.SetState(jumpChargeAnim);
                 jumpChargeAmount += (Time.fixedDeltaTime / jumpChargeTime);
                 jumpChargeAmount = Mathf.Min (jumpChargeAmount, 1.0f);
 
                 //Rotates so it appears to be "on the ground."
-                RotateTowards(Quaternion.FromToRotation(Vector2.up, groundNormal));
+                RotateFloor();
 
                 break;
             case State.GroundPound:
+                sa.SetState(groundPoundAnim);
                 rb.gravityScale = groundPoundGravityScale;
                 break;
         }
@@ -209,6 +299,8 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
+    
+
     /*current idea as a note to myself: a larger collider that basically magnetizes the slime to
     a nearby wall*/
     void OnCollisionStay2D(Collision2D col) {
@@ -220,8 +312,24 @@ public class PlayerMovement : MonoBehaviour
             if (groundMask == (groundMask | 1 << col.GetContact(i).collider.gameObject.layer)) {
                 groundNormal = col.GetContact(0).normal;
 
-                if (state == State.JumpCharge) return;
+                if (slimeTrail != null) {
+                    slimeTrail.emitting = true;
+                    slimeTrail.transform.position = col.GetContact(0).point;
+                }
+
+                //Scuffed temp variable to track if transition to the ground state.
+                bool a = false;
+
+                if (state != State.Ground) {
+                    a = true;
+                }
+
+                if (state == State.JumpCharge || jump) return;
                 state = State.Ground;
+
+                if (a) {
+                    AdjustHorizontalInput();
+                }
             }
         }
         
@@ -230,9 +338,21 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
-    //MAKE GROUND DETECTION BETTER THAN THIS.
+    void OnCollisionEnter2D(Collision2D col) {
+
+        if (groundMask == (groundMask | 1 << col.collider.gameObject.layer)) {
+            groundCount += 1;
+
+            jump = false;
+        }
+    }
+
     void OnCollisionExit2D(Collision2D col) {
-        state = State.Air;
+        if (slimeTrail != null) slimeTrail.emitting = false;
+
+        if (groundMask == (groundMask | 1 << col.collider.gameObject.layer)) {
+            groundCount -= 1;
+        }
     }
 
     //Lerps the rotation towards a specific value based on the rotationLerp variable.
@@ -240,8 +360,23 @@ public class PlayerMovement : MonoBehaviour
         rb.SetRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationLerp));
     }
 
+    public void RotateTowards(float angle) {
+        rb.SetRotation(Mathf.Lerp(transform.rotation.eulerAngles.z, angle, rotationLerp));
+        //rb.SetRotation(angle);
+    }
+
+    public void RotateFloor() {
+        if (groundNormal.normalized.y != -1) {
+            RotateTowards(Quaternion.FromToRotation(Vector2.up, groundNormal));
+            Debug.Log(groundNormal.normalized);
+        } else {
+            RotateTowards(180);
+            Debug.Log("Bazinga");
+        }
+    }
+
     public bool UpsideDown() {
-        return (Vector2.Dot(transform.up, Vector2.down) > 0);
+        return (Vector2.Dot(groundNormal, Vector2.down) > 0);
     }
 
     #region action_functions
@@ -253,16 +388,18 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public void Jump() {
+        jump = true;
+        jumpResetTimer = jumpResetTime;
         state = State.Air;
 
         Vector2 jumpDir = groundNormal;
         if (!directionalInput.Equals(Vector2.zero)) {
-            jumpDir = directionalInput.normalized;
+            jumpDir = trueDirectionalInput.normalized;
 
-            if (UpsideDown()) jumpDir.x = -jumpDir.x;
+            //if (UpsideDown()) jumpDir.x = -jumpDir.x;
         }
+
         rb.AddForce(jumpDir * (jumpForceFloor + (jumpForceCurve.Evaluate(jumpChargeAmount) * jumpForceMultiplier)), ForceMode2D.Impulse);
-        
     }
 
     public void GroundPound() {
@@ -270,4 +407,20 @@ public class PlayerMovement : MonoBehaviour
     }
 
     #endregion
+}
+
+//code from DDP. idk how it works. math is magic to me.
+//https://discussions.unity.com/t/whats-the-most-efficient-way-to-rotate-a-vector2-of-a-certain-angle-around-the-axis-orthogonal-to-the-plane-they-describe/98886
+public static class Vector2Extension {
+	
+	public static Vector2 Rotate(this Vector2 v, float degrees) {
+		float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
+		float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
+		
+		float tx = v.x;
+		float ty = v.y;
+		v.x = (cos * tx) - (sin * ty);
+		v.y = (sin * tx) + (cos * ty);
+		return v;
+	}
 }
