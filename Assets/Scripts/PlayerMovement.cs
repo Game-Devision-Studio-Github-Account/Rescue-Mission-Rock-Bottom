@@ -20,7 +20,9 @@ public class PlayerMovement : MonoBehaviour
         //State when charging a jump.
         JumpCharge,
         //State when ground pounding.
-        GroundPound
+        GroundPound,
+        //State when attacking
+        Attack
     }
 
     public State state;
@@ -28,22 +30,24 @@ public class PlayerMovement : MonoBehaviour
     [Header("Input")]
 
     //The keys used to input left and right.
-    public KeyCode leftInput = KeyCode.A;
-    public KeyCode rightInput = KeyCode.D;
+    public KeyCode leftInput = KeyCode.LeftArrow;
+    public KeyCode rightInput = KeyCode.RightArrow;
 
     //Stores which inputs are ACTUALLY left and right, in case the slime is upside down.
     KeyCode currentLeftInput;
     KeyCode currentRightInput;
     //The keys used to input Up and Down.
-    public KeyCode upInput = KeyCode.W;
-    public KeyCode downInput = KeyCode.S;
+    public KeyCode upInput = KeyCode.UpArrow;
+    public KeyCode downInput = KeyCode.DownArrow;
     //The Vector2 of the directional inputs. Set in Update.
     Vector2 directionalInput;  
     Vector2 trueDirectionalInput;
     //The key needed to input Jump.
-    public KeyCode jumpInput = KeyCode.Space;
+    public KeyCode jumpInput = KeyCode.Z;
     //The key needed to input a Ground Pound
-    public KeyCode groundPoundInput = KeyCode.LeftShift;
+    public KeyCode groundPoundInput = KeyCode.C;
+    //The key needed to input an Attack
+    public KeyCode attackInput = KeyCode.X;
 
     [Header("Locomotion")]
     //Movement speed on a surface.
@@ -72,6 +76,12 @@ public class PlayerMovement : MonoBehaviour
     //The time, in sections, to manually reset the jump variable if the ground has not been left.
     public float jumpResetTime = 0.1f;
     float jumpResetTimer;
+    [Header("Attacking")]
+    public float attackDuration = 0.1f;
+    float attackTimer;
+    public float attackCooldown = 0.1f;
+    public float attackCooldownTimer;
+    bool canAttack;
 
     [Header("Ground Pound")]
     public float groundPoundGravityScale = 2f;
@@ -86,6 +96,7 @@ public class PlayerMovement : MonoBehaviour
     public string idleAnim = "Idle";
     public string jumpChargeAnim = "JumpCharge";
     public string groundPoundAnim = "GroundPound";
+    public string attackAnim = "Attack";
 
 
     // Start is called before the first frame update
@@ -116,6 +127,8 @@ public class PlayerMovement : MonoBehaviour
 
         //Defaults the state to Air since OnCollisionExit can't run on frame 1.
         state = State.Air;
+
+        attackCooldownTimer = 0f;
     }
 
     // Update is called once per frame. Used to handle inputs.
@@ -140,6 +153,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (state == State.Air && Input.GetKey(groundPoundInput)) {
             GroundPound();
+        }
+
+        attackCooldownTimer -= Time.deltaTime;
+        canAttack = (attackCooldownTimer <= 0);
+
+        if (state == State.Ground && Input.GetKey(attackInput) && canAttack) {
+            Attack();
         }
     }
 
@@ -178,7 +198,13 @@ public class PlayerMovement : MonoBehaviour
             jumpResetTimer -= Time.fixedDeltaTime;
             if (jumpResetTimer <= 0) jump = false;
         }
+
+        if (state == State.Attack) {
+            attackTimer -= Time.fixedDeltaTime;
+            if (attackTimer <= 0) state = State.Ground;
+        }
         
+       
 
         if (groundCount == 0 && state != State.GroundPound) {
             
@@ -195,18 +221,26 @@ public class PlayerMovement : MonoBehaviour
 
                 return;
             }
-            
-            jump = false;
-            state = State.Air;
 
+            if (groundCount == 0) {
+                jump = false;
+                state = State.Air;
+                
+                if (slimeTrail != null) slimeTrail.emitting = false;
+
+            }
+            
+            
         } else {
+
+
             bool a = false;
 
             if (state != State.Ground) {
                 a = true;
             }
 
-            if (state != State.JumpCharge && state != State.GroundPound && !jump) {
+            if (state != State.JumpCharge && state != State.Attack && !jump) {
                 state = State.Ground;
 
                 if (a) {
@@ -272,6 +306,10 @@ public class PlayerMovement : MonoBehaviour
                 sa.SetState(groundPoundAnim);
                 rb.gravityScale = groundPoundGravityScale;
                 break;
+            case State.Attack:
+                sa.SetState(attackAnim);
+                rb.velocity = Vector2.zero;
+                break;
         }
 
         
@@ -324,7 +362,7 @@ public class PlayerMovement : MonoBehaviour
                     a = true;
                 }
 
-                if (state == State.JumpCharge || jump) return;
+                if (!(state != State.JumpCharge && state != State.Attack && !jump)) return;
                 state = State.Ground;
 
                 if (a) {
@@ -348,7 +386,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void OnCollisionExit2D(Collision2D col) {
-        if (slimeTrail != null) slimeTrail.emitting = false;
+        
 
         if (groundMask == (groundMask | 1 << col.collider.gameObject.layer)) {
             groundCount -= 1;
@@ -368,10 +406,8 @@ public class PlayerMovement : MonoBehaviour
     public void RotateFloor() {
         if (groundNormal.normalized.y != -1) {
             RotateTowards(Quaternion.FromToRotation(Vector2.up, groundNormal));
-            Debug.Log(groundNormal.normalized);
         } else {
             RotateTowards(180);
-            Debug.Log("Bazinga");
         }
     }
 
@@ -404,6 +440,12 @@ public class PlayerMovement : MonoBehaviour
 
     public void GroundPound() {
         state = State.GroundPound;
+    }
+
+    public void Attack() {
+        attackTimer = attackDuration;
+        attackCooldownTimer = attackCooldown;
+        state = State.Attack;
     }
 
     #endregion
