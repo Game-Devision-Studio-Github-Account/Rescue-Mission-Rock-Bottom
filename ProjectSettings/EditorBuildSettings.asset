@@ -9,6 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/PlayerControllerTesting.unity
     guid: 145b5b9f616ee1543911eac95b93ee22
   m_configObjects:
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: b18491ac9ed82bc4f81cf00e226addaf, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: b165cc6d6a65b6448a97419b68fed4fa, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 4fcf5d25765dadd4e98de3262fb9c141, type: 2}
     com.unity.ml-agents.settings: {fileID: 11400000, guid: 64e3b662c3b02fc41abd053c49e0269f, type: 2}
