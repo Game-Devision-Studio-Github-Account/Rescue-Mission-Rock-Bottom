@@ -1198,8 +1198,8 @@ MonoBehaviour:
   jumpForceFloor: 7
   jumpChargeTime: 1
   jumpResetTime: 0.1
-  attackDuration: 0.1
-  attackCooldown: 0.1
+  attackDuration: 0.2
+  attackCooldown: 0.2
   attackCooldownTimer: 0
   groundPoundGravityScale: 10
   rotationLerp: 0.2
