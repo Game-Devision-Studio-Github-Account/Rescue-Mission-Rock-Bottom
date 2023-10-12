@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1960913264387088904}
   - component: {fileID: 5158674038842983407}
   - component: {fileID: 8240733161469800391}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -158,12 +158,14 @@ MonoBehaviour:
   jumpForceFloor: 7
   jumpChargeTime: 1
   jumpResetTime: 0.1
-  attackDuration: 0.2
-  attackCooldown: 0.2
+  attackDuration: 0.5
+  attackCooldown: 1
   attackCooldownTimer: 0
+  attackForce: 5
   groundPoundGravityScale: 10
   rotationLerp: 0.2
   slimeTrail: {fileID: 4290506404898775844}
+  groundImpactEffect: {fileID: 6801229182872263772, guid: b64c88ebf9b42ed4f8a544362a017d9c, type: 3}
   idleAnim: Idle
   jumpChargeAnim: JumpCharge
   groundPoundAnim: GroundPound
@@ -179,7 +181,7 @@ GameObject:
   - component: {fileID: 2837868494804691735}
   - component: {fileID: 8523159941667577410}
   - component: {fileID: 1741178921492359808}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fred the Slime
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -284,7 +286,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4600813077162512757}
   - component: {fileID: 4290506404898775844}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SlimeTrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
