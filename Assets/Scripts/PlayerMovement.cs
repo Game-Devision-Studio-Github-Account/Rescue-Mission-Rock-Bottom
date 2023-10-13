@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    
+    public static GameObject PlayerGO;
     public Rigidbody2D rb;
     public CircleCollider2D cc;
     ScriptAnimator sa;
@@ -61,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
     //Normal of the ground.
     public Vector2 groundNormal;
     //How far out to detect ground. If less than.
+    Vector2 groundPoint;
     public float groundCastRadius = 0.5f;
     public float groundMagnetism = 1;
 
@@ -82,6 +83,7 @@ public class PlayerMovement : MonoBehaviour
     public float attackCooldown = 0.1f;
     public float attackCooldownTimer;
     bool canAttack;
+    public float attackForce = 5f;
 
     [Header("Ground Pound")]
     public float groundPoundGravityScale = 2f;
@@ -91,6 +93,7 @@ public class PlayerMovement : MonoBehaviour
     //Lerp speed for rotation. Too fast looks scuffed and jittery, too slow looks sluggish.
     public float rotationLerp = 0.2f;
     public TrailRenderer slimeTrail;
+    public GameObject groundImpactEffect;
 
     [Header("Animation")]
     public string idleAnim = "Idle";
@@ -99,9 +102,14 @@ public class PlayerMovement : MonoBehaviour
     public string attackAnim = "Attack";
 
 
+    void Awake() {
+        PlayerGO = gameObject;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        
         //Checks for a Rigidbody2D on the GameObject itself if none is assigned in the inspector.
         if (rb == null) {
             rb = GetComponent<Rigidbody2D>();
@@ -205,50 +213,8 @@ public class PlayerMovement : MonoBehaviour
         }
         
        
-
-        if (groundCount == 0 && state != State.GroundPound) {
-            
-            if (state == State.Ground) {
-                RaycastHit2D gc = Physics2D.CircleCast(rb.position + (rb.velocity * Time.fixedDeltaTime), cc.radius + 0.01f + groundCastRadius, Vector2.zero, 0, groundMask);
-
-                if (gc == false) {
-                    state = State.Air;
-                    return;
-                }
-
-                rb.MovePosition(gc.point);
-                rb.velocity = rb.velocity.magnitude * (Vector2.Perpendicular(groundNormal).normalized * ((Mathf.Abs(Vector2.Angle(rb.velocity, Vector2.Perpendicular(groundNormal))) < 90) ? 1 : -1));
-
-                return;
-            }
-
-            if (groundCount == 0) {
-                jump = false;
-                state = State.Air;
-                
-                if (slimeTrail != null) slimeTrail.emitting = false;
-
-            }
-            
-            
-        } else {
-
-
-            bool a = false;
-
-            if (state != State.Ground) {
-                a = true;
-            }
-
-            if (state != State.JumpCharge && state != State.Attack && !jump) {
-                state = State.Ground;
-
-                if (a) {
-                    AdjustHorizontalInput();
-                }
-            }
-            
-        }
+        HandleGround();
+        
 
         switch(state) {
             case State.Ground:
@@ -307,14 +273,94 @@ public class PlayerMovement : MonoBehaviour
                 rb.gravityScale = groundPoundGravityScale;
                 break;
             case State.Attack:
+                rb.gravityScale = 0;
                 sa.SetState(attackAnim);
-                rb.velocity = Vector2.zero;
                 break;
         }
 
         
 
         
+    }
+
+    public void HandleGround() {
+        if (groundCount == 0) {
+            if (state == State.GroundPound) return;
+            
+            if (state == State.Ground || state == State.JumpCharge) {
+                //RaycastHit2D gc = Physics2D.CircleCast(rb.position + (rb.velocity * Time.fixedDeltaTime), cc.radius + 0.01f + groundCastRadius, Vector2.zero, 0, groundMask);
+                RaycastHit2D gc = Physics2D.CircleCast(rb.position, cc.radius + 0.01f + groundCastRadius, Vector2.zero, 0, groundMask);
+
+                RaycastHit2D gl = Physics2D.Raycast(rb.position, -transform.up, cc.radius + 0.01f + groundCastRadius, groundMask);
+
+                if (gl) {
+                    groundNormal = gl.normal;
+                } else if (gc) {
+                    groundNormal = gc.normal;
+                }
+                
+
+                if (gc == false) {
+                    state = State.Air;
+                    if (slimeTrail != null) slimeTrail.emitting = false;
+                } else {
+                    slimeTrail.emitting = true;
+                    slimeTrail.transform.position = gl.point;
+                    
+                    //rb.MovePosition(gl.point - (-groundNormal * cc.radius));
+                    
+                    //rb.velocity = rb.velocity.magnitude * (Vector2.Perpendicular(groundNormal).normalized * ((Mathf.Abs(Vector2.Angle(rb.velocity, Vector2.Perpendicular(groundNormal))) < 90) ? 1 : -1));
+                    rb.velocity = rb.velocity.magnitude * Vector2.Perpendicular(groundNormal).normalized * ((Mathf.Abs(Vector2.Angle(rb.velocity, Vector2.Perpendicular(groundNormal))) < 90) ? 1 : -1);
+
+                    Magnetize();
+
+                    RotateFloor();
+
+                    if (state != State.GroundPound && state != State.JumpCharge) state = State.Ground;
+                }
+
+                
+
+                return;
+            } else {
+                state = State.Air;
+                if (slimeTrail != null) slimeTrail.emitting = false;
+            }
+
+            /*if (groundCount == 0) {
+                jump = false;
+                state = State.Air;
+                
+                if (slimeTrail != null) slimeTrail.emitting = false;
+
+            }*/
+            
+            
+        } else {
+
+
+            bool a = false;
+
+            if (state != State.Ground) {
+                a = true;
+            }
+
+            if (state != State.JumpCharge && state != State.Attack && !jump) {
+
+                if (state != State.Ground) {
+                    GameObject impactGO = Instantiate(groundImpactEffect);
+                    impactGO.transform.position = groundPoint;
+
+                }
+
+                state = State.Ground;
+
+                if (a) {
+                    AdjustHorizontalInput();
+                }
+            }
+            
+        }
     }
 
     public void Magnetize() {
@@ -363,7 +409,8 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 if (!(state != State.JumpCharge && state != State.Attack && !jump)) return;
-                state = State.Ground;
+                //state = State.Ground;
+                groundPoint = col.contacts[0].point;
 
                 if (a) {
                     AdjustHorizontalInput();
@@ -380,6 +427,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (groundMask == (groundMask | 1 << col.collider.gameObject.layer)) {
             groundCount += 1;
+
+            groundPoint = col.contacts[0].point;
 
             jump = false;
         }
@@ -445,6 +494,10 @@ public class PlayerMovement : MonoBehaviour
     public void Attack() {
         attackTimer = attackDuration;
         attackCooldownTimer = attackCooldown;
+
+
+        rb.AddForce(transform.right * (sprite.transform.localScale.x > 0 ? 1 : -1) * attackForce, ForceMode2D.Impulse);
+
         state = State.Attack;
     }
 
