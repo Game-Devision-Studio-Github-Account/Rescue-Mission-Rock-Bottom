@@ -6,6 +6,7 @@ TagManager:
   tags:
   - GameLevel
   - PracticeDummy
+  - Enemy
   layers:
   - Default
   - TransparentFX
