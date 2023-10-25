@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     ScriptAnimator sa;
     public Animator anim;
     public SpriteRenderer sprite;
+    public HealthUI healthUI;
+    public HealthUIMessenger healthUIMessenger;
 
     public enum State {
         //State when attached to ground or walls.
@@ -23,6 +25,10 @@ public class PlayerMovement : MonoBehaviour
         GroundPound,
         //State when attacking
         Attack
+    }
+
+    public enum SpecialAttack {
+        None
     }
 
     public State state;
@@ -93,13 +99,16 @@ public class PlayerMovement : MonoBehaviour
     //Lerp speed for rotation. Too fast looks scuffed and jittery, too slow looks sluggish.
     public float rotationLerp = 0.2f;
     public TrailRenderer slimeTrail;
-    public GameObject groundImpactEffect;
 
     [Header("Animation")]
     public string idleAnim = "Idle";
     public string jumpChargeAnim = "JumpCharge";
     public string groundPoundAnim = "GroundPound";
     public string attackAnim = "Attack";
+    [Header("Elements")]
+    public SlimeElement defaultElement;
+    SlimeElement element;
+    
 
 
     void Awake() {
@@ -109,7 +118,6 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         //Checks for a Rigidbody2D on the GameObject itself if none is assigned in the inspector.
         if (rb == null) {
             rb = GetComponent<Rigidbody2D>();
@@ -133,10 +141,20 @@ public class PlayerMovement : MonoBehaviour
             sprite = GetComponentInChildren<SpriteRenderer>();
         }
 
+        if (healthUI == null) {
+            healthUI = FindObjectOfType<HealthUI>();
+        }
+
+        if (healthUIMessenger == null) {
+            healthUIMessenger = FindObjectOfType<HealthUIMessenger>();
+        }
+
         //Defaults the state to Air since OnCollisionExit can't run on frame 1.
         state = State.Air;
 
         attackCooldownTimer = 0f;
+
+        SetElement(defaultElement);
     }
 
     // Update is called once per frame. Used to handle inputs.
@@ -338,7 +356,6 @@ public class PlayerMovement : MonoBehaviour
             
         } else {
 
-
             bool a = false;
 
             if (state != State.Ground) {
@@ -348,7 +365,7 @@ public class PlayerMovement : MonoBehaviour
             if (state != State.JumpCharge && state != State.Attack && !jump) {
 
                 if (state != State.Ground) {
-                    GameObject impactGO = Instantiate(groundImpactEffect);
+                    GameObject impactGO = Instantiate(element.groundImpactEffect);
                     impactGO.transform.position = groundPoint;
 
                 }
@@ -398,7 +415,9 @@ public class PlayerMovement : MonoBehaviour
 
                 if (slimeTrail != null) {
                     slimeTrail.emitting = true;
-                    slimeTrail.transform.position = col.GetContact(0).point;
+                    groundPoint = col.contacts[0].point;
+                    //slimeTrail.transform.position = col.GetContact(0).point;
+                    slimeTrail.transform.position = groundPoint;
                 }
 
                 //Scuffed temp variable to track if transition to the ground state.
@@ -485,6 +504,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rb.AddForce(jumpDir * (jumpForceFloor + (jumpForceCurve.Evaluate(jumpChargeAmount) * jumpForceMultiplier)), ForceMode2D.Impulse);
+
+        GameObject effectGO = Instantiate(element.jumpEffect);
+        effectGO.transform.position = groundPoint;
+        effectGO.transform.rotation = Quaternion.FromToRotation(Vector2.up, groundNormal);
     }
 
     public void GroundPound() {
@@ -502,20 +525,18 @@ public class PlayerMovement : MonoBehaviour
     }
 
     #endregion
-}
 
-//code from DDP. idk how it works. math is magic to me.
-//https://discussions.unity.com/t/whats-the-most-efficient-way-to-rotate-a-vector2-of-a-certain-angle-around-the-axis-orthogonal-to-the-plane-they-describe/98886
-public static class Vector2Extension {
-	
-	public static Vector2 Rotate(this Vector2 v, float degrees) {
-		float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
-		float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
-		
-		float tx = v.x;
-		float ty = v.y;
-		v.x = (cos * tx) - (sin * ty);
-		v.y = (sin * tx) + (cos * ty);
-		return v;
-	}
+    public void SetElement(SlimeElement newElement) {
+        element = newElement;
+
+        slimeTrail.startColor = element.trailStartColor;
+        slimeTrail.endColor = element.trailEndColor;
+
+        anim.runtimeAnimatorController = element.animationSet;
+        healthUI.fullHeartImage = element.fullHeartImage;
+        healthUI.halfHeartImage = element.halfHeartImage;
+        healthUI.emptyHeartImage = element.emptyHeartImage;
+
+        healthUIMessenger.UpdateHealthUI();
+    }
 }
