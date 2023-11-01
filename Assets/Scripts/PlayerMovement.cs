@@ -11,8 +11,10 @@ public class PlayerMovement : MonoBehaviour
     ScriptAnimator sa;
     public Animator anim;
     public SpriteTools st;
+    public Health health;
     public HealthUI healthUI;
     public HealthUIMessenger healthUIMessenger;
+    public SlopeRotation sr;
 
     public enum State {
         //State when attached to ground or walls.
@@ -93,11 +95,6 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Ground Pound")]
     public float groundPoundGravityScale = 2f;
-
-    [Header("Visuals")]
-    [Range(0.0f, 1.0f)]
-    //Lerp speed for rotation. Too fast looks scuffed and jittery, too slow looks sluggish.
-    public float rotationLerp = 0.2f;
     public TrailRenderer slimeTrail;
 
     [Header("Animation")]
@@ -139,12 +136,20 @@ public class PlayerMovement : MonoBehaviour
             st = GetComponentInChildren<SpriteTools>();
         }
 
+        if (health == null) {
+            health = GetComponent<Health>();
+        }
+
         if (healthUI == null) {
             healthUI = FindObjectOfType<HealthUI>();
         }
 
         if (healthUIMessenger == null) {
-            healthUIMessenger = FindObjectOfType<HealthUIMessenger>();
+            healthUIMessenger = GetComponent<HealthUIMessenger>();
+        }
+
+        if (sr == null) {
+            sr = GetComponent<SlopeRotation>();
         }
 
         //Defaults the state to Air since OnCollisionExit can't run on frame 1.
@@ -257,7 +262,7 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 //Rotates so it appears to be "on the ground."
-                RotateFloor();
+                sr.RotateFloor(groundNormal);
 
                 break;
             case State.Air:
@@ -273,7 +278,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 
                 //Rotates back to the default.
-                RotateTowards(Quaternion.identity);
+                sr.RotateTowards(Quaternion.identity);
 
                 break;
             case State.JumpCharge:
@@ -282,7 +287,7 @@ public class PlayerMovement : MonoBehaviour
                 jumpChargeAmount = Mathf.Min (jumpChargeAmount, 1.0f);
 
                 //Rotates so it appears to be "on the ground."
-                RotateFloor();
+                sr.RotateFloor(groundNormal);
 
                 break;
             case State.GroundPound:
@@ -331,7 +336,7 @@ public class PlayerMovement : MonoBehaviour
 
                     Magnetize();
 
-                    RotateFloor();
+                    sr.RotateFloor(groundNormal);
 
                     if (state != State.GroundPound && state != State.JumpCharge) state = State.Ground;
                 }
@@ -464,25 +469,16 @@ public class PlayerMovement : MonoBehaviour
     {
         Collectible c = col.GetComponent<Collectible>();
         if(c != null) c.Collect();
-    }
 
-    //Lerps the rotation towards a specific value based on the rotationLerp variable.
-    public void RotateTowards(Quaternion targetRotation) {
-        rb.SetRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationLerp));
-    }
+        Pit p = col.GetComponent<Pit>();
+        if(p != null) {
+            transform.position = p.respawnPoint.position;
+            rb.velocity = Vector3.zero;
 
-    public void RotateTowards(float angle) {
-        rb.SetRotation(Mathf.Lerp(transform.rotation.eulerAngles.z, angle, rotationLerp));
-        //rb.SetRotation(angle);
-    }
-
-    public void RotateFloor() {
-        if (groundNormal.normalized.y != -1) {
-            RotateTowards(Quaternion.FromToRotation(Vector2.up, groundNormal));
-        } else {
-            RotateTowards(180);
+            health.Damage(p.damage);
         }
     }
+    
 
     public bool UpsideDown() {
         return (Vector2.Dot(groundNormal, Vector2.down) > 0);

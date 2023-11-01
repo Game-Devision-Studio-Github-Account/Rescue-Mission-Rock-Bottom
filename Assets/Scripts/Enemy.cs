@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
     public Rigidbody2D rb;
     public SpriteTools st;
     public CircleCollider2D cc;
+    public SlopeRotation sr;
 
     public enum State {
         Idle,
@@ -46,6 +47,10 @@ public class Enemy : MonoBehaviour
         if (cc == null) {
             cc = GetComponent<CircleCollider2D>();
         }
+
+        if (sr == null) {
+            sr = GetComponent<SlopeRotation>();
+        }
     }
 
     // Update is called once per frame
@@ -74,6 +79,7 @@ public class Enemy : MonoBehaviour
                 
                 break;
             case State.Idle:
+                sr.RotateFloor(groundNormal);
                 float angle = Vector3.Angle(groundNormal, Vector3.up);
 
                 bool shouldFlip = false;
