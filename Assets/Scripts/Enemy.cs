@@ -38,6 +38,8 @@ public class Enemy : MonoBehaviour
     public float aheadCheckDistance = 5f;
     public float aheadCheckHeight = 5f;
 
+    [Header("Death")]
+    public GameObject drop;
 
 
     // Start is called before the first frame update
@@ -156,6 +158,10 @@ public class Enemy : MonoBehaviour
     }
 
     public void Die() {
+        if (drop != null) {
+            GameObject d = Instantiate(drop);
+            d.transform.position = transform.position;
+        }
         Destroy(gameObject);
     }
 }

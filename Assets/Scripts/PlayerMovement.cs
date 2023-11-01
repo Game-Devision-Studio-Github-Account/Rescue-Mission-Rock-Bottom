@@ -493,6 +493,11 @@ public class PlayerMovement : MonoBehaviour
 
             health.Damage(p.damage);
         }
+
+        ElementPickup ep = col.GetComponent<ElementPickup>();
+        if(ep != null) {
+            SetElement(ep.element);
+        }
     }
     
 
