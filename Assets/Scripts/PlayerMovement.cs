@@ -475,6 +475,8 @@ public class PlayerMovement : MonoBehaviour
             transform.position = p.respawnPoint.position;
             rb.velocity = Vector3.zero;
 
+            state = State.Air;
+
             health.Damage(p.damage);
         }
     }

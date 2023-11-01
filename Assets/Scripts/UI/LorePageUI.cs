@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Note : MonoBehaviour
+public class LorePageUI : MonoBehaviour
 {
+    public KeyCode dismissInput = KeyCode.Space;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,10 +14,8 @@ public class Note : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    public void Show() {
-        GameManager.gameManager.ShowLoreNote();
+        if (Input.GetKeyDown(dismissInput)) {
+            gameObject.SetActive(false);
+        }   
     }
 }

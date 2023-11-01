@@ -5,9 +5,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager gameManager;
+    [Header("References - UI")]
+    public LorePageUI lorePageUI;
 
     [Header("Data")]
-    public bool gameOver = false;
+    public static bool gameOver = false;
 
     void Awake() {
         if (gameManager == null) {
@@ -16,6 +18,11 @@ public class GameManager : MonoBehaviour
         } else {
             Destroy(this);
         }   
+    }
+    
+    void OnEnable()
+    {
+        if (lorePageUI == null) lorePageUI = FindObjectOfType<LorePageUI>();
     }
 
     // Start is called before the first frame update
@@ -32,5 +39,9 @@ public class GameManager : MonoBehaviour
 
     public void EndGame() {
         Debug.Log("bazinger");
+    }
+
+    public void ShowLoreNote() {
+        lorePageUI.gameObject.SetActive(true);
     }
 }
