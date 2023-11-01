@@ -10,7 +10,11 @@ public class PlayerMovement : MonoBehaviour
     public CircleCollider2D cc;
     ScriptAnimator sa;
     public Animator anim;
-    public SpriteRenderer sprite;
+    public SpriteTools st;
+    public Health health;
+    public HealthUI healthUI;
+    public HealthUIMessenger healthUIMessenger;
+    public SlopeRotation sr;
 
     public enum State {
         //State when attached to ground or walls.
@@ -48,6 +52,7 @@ public class PlayerMovement : MonoBehaviour
     public KeyCode groundPoundInput = KeyCode.C;
     //The key needed to input an Attack
     public KeyCode attackInput = KeyCode.X;
+    public KeyCode specialAttackInput = KeyCode.V;
 
     [Header("Locomotion")]
     //Movement speed on a surface.
@@ -84,23 +89,22 @@ public class PlayerMovement : MonoBehaviour
     public float attackCooldownTimer;
     bool canAttack;
     public float attackForce = 5f;
+    [Header("Special Attacking")]
+    public float projectileSpawnDistance = 1;
+
 
     [Header("Ground Pound")]
     public float groundPoundGravityScale = 2f;
-
-    [Header("Visuals")]
-    [Range(0.0f, 1.0f)]
-    //Lerp speed for rotation. Too fast looks scuffed and jittery, too slow looks sluggish.
-    public float rotationLerp = 0.2f;
     public TrailRenderer slimeTrail;
-    public GameObject groundImpactEffect;
 
     [Header("Animation")]
     public string idleAnim = "Idle";
     public string jumpChargeAnim = "JumpCharge";
     public string groundPoundAnim = "GroundPound";
     public string attackAnim = "Attack";
-
+    [Header("Elements")]
+    public SlimeElement defaultElement;
+    SlimeElement element;
 
     void Awake() {
         PlayerGO = gameObject;
@@ -109,7 +113,6 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         //Checks for a Rigidbody2D on the GameObject itself if none is assigned in the inspector.
         if (rb == null) {
             rb = GetComponent<Rigidbody2D>();
@@ -129,14 +132,32 @@ public class PlayerMovement : MonoBehaviour
 
         sa = new ScriptAnimator(anim);
 
-        if (sprite == null) {
-            sprite = GetComponentInChildren<SpriteRenderer>();
+        if (st == null) {
+            st = GetComponentInChildren<SpriteTools>();
+        }
+
+        if (health == null) {
+            health = GetComponent<Health>();
+        }
+
+        if (healthUI == null) {
+            healthUI = FindObjectOfType<HealthUI>();
+        }
+
+        if (healthUIMessenger == null) {
+            healthUIMessenger = GetComponent<HealthUIMessenger>();
+        }
+
+        if (sr == null) {
+            sr = GetComponent<SlopeRotation>();
         }
 
         //Defaults the state to Air since OnCollisionExit can't run on frame 1.
         state = State.Air;
 
         attackCooldownTimer = 0f;
+
+        SetElement(defaultElement);
     }
 
     // Update is called once per frame. Used to handle inputs.
@@ -168,6 +189,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (state == State.Ground && Input.GetKey(attackInput) && canAttack) {
             Attack();
+        }
+
+        if (Input.GetKeyDown(specialAttackInput) && element.canSpecialAttack && canAttack) {
+            SpecialAttack();
         }
     }
 
@@ -222,10 +247,7 @@ public class PlayerMovement : MonoBehaviour
                 sa.SetState(idleAnim);
 
                 if (directionalInput.x != 0) {
-                    sprite.transform.localScale = new Vector2(
-                        directionalInput.x > 0 ? 1 : -1,
-                        sprite.transform.localScale.y
-                    );
+                    st.flipped = directionalInput.x > 0 ? false : true;
                 }
                 
 
@@ -240,7 +262,7 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 //Rotates so it appears to be "on the ground."
-                RotateFloor();
+                sr.RotateFloor(groundNormal);
 
                 break;
             case State.Air:
@@ -256,7 +278,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 
                 //Rotates back to the default.
-                RotateTowards(Quaternion.identity);
+                sr.RotateTowards(Quaternion.identity);
 
                 break;
             case State.JumpCharge:
@@ -265,7 +287,7 @@ public class PlayerMovement : MonoBehaviour
                 jumpChargeAmount = Mathf.Min (jumpChargeAmount, 1.0f);
 
                 //Rotates so it appears to be "on the ground."
-                RotateFloor();
+                sr.RotateFloor(groundNormal);
 
                 break;
             case State.GroundPound:
@@ -314,7 +336,7 @@ public class PlayerMovement : MonoBehaviour
 
                     Magnetize();
 
-                    RotateFloor();
+                    sr.RotateFloor(groundNormal);
 
                     if (state != State.GroundPound && state != State.JumpCharge) state = State.Ground;
                 }
@@ -338,7 +360,6 @@ public class PlayerMovement : MonoBehaviour
             
         } else {
 
-
             bool a = false;
 
             if (state != State.Ground) {
@@ -348,7 +369,7 @@ public class PlayerMovement : MonoBehaviour
             if (state != State.JumpCharge && state != State.Attack && !jump) {
 
                 if (state != State.Ground) {
-                    GameObject impactGO = Instantiate(groundImpactEffect);
+                    GameObject impactGO = Instantiate(element.groundImpactEffect);
                     impactGO.transform.position = groundPoint;
 
                 }
@@ -398,7 +419,9 @@ public class PlayerMovement : MonoBehaviour
 
                 if (slimeTrail != null) {
                     slimeTrail.emitting = true;
-                    slimeTrail.transform.position = col.GetContact(0).point;
+                    groundPoint = col.contacts[0].point;
+                    //slimeTrail.transform.position = col.GetContact(0).point;
+                    slimeTrail.transform.position = groundPoint;
                 }
 
                 //Scuffed temp variable to track if transition to the ground state.
@@ -442,23 +465,22 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    //Lerps the rotation towards a specific value based on the rotationLerp variable.
-    public void RotateTowards(Quaternion targetRotation) {
-        rb.SetRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationLerp));
-    }
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        Collectible c = col.GetComponent<Collectible>();
+        if(c != null) c.Collect();
 
-    public void RotateTowards(float angle) {
-        rb.SetRotation(Mathf.Lerp(transform.rotation.eulerAngles.z, angle, rotationLerp));
-        //rb.SetRotation(angle);
-    }
+        Pit p = col.GetComponent<Pit>();
+        if(p != null) {
+            transform.position = p.respawnPoint.position;
+            rb.velocity = Vector3.zero;
 
-    public void RotateFloor() {
-        if (groundNormal.normalized.y != -1) {
-            RotateTowards(Quaternion.FromToRotation(Vector2.up, groundNormal));
-        } else {
-            RotateTowards(180);
+            state = State.Air;
+
+            health.Damage(p.damage);
         }
     }
+    
 
     public bool UpsideDown() {
         return (Vector2.Dot(groundNormal, Vector2.down) > 0);
@@ -485,6 +507,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rb.AddForce(jumpDir * (jumpForceFloor + (jumpForceCurve.Evaluate(jumpChargeAmount) * jumpForceMultiplier)), ForceMode2D.Impulse);
+
+        GameObject effectGO = Instantiate(element.jumpEffect);
+        effectGO.transform.position = groundPoint;
+        effectGO.transform.rotation = Quaternion.FromToRotation(Vector2.up, groundNormal);
     }
 
     public void GroundPound() {
@@ -496,26 +522,47 @@ public class PlayerMovement : MonoBehaviour
         attackCooldownTimer = attackCooldown;
 
 
-        rb.AddForce(transform.right * (sprite.transform.localScale.x > 0 ? 1 : -1) * attackForce, ForceMode2D.Impulse);
+        rb.AddForce(transform.right * (!st.flipped ? 1 : -1) * attackForce, ForceMode2D.Impulse);
 
         state = State.Attack;
     }
 
-    #endregion
-}
+    public void SpecialAttack() {
+        if (element.specialAttackProjectile == null) {
+            Debug.LogError("No Special Attack Projectile assigned to Element ScriptableObject");
+            return;
+        }
 
-//code from DDP. idk how it works. math is magic to me.
-//https://discussions.unity.com/t/whats-the-most-efficient-way-to-rotate-a-vector2-of-a-certain-angle-around-the-axis-orthogonal-to-the-plane-they-describe/98886
-public static class Vector2Extension {
-	
-	public static Vector2 Rotate(this Vector2 v, float degrees) {
-		float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
-		float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
-		
-		float tx = v.x;
-		float ty = v.y;
-		v.x = (cos * tx) - (sin * ty);
-		v.y = (sin * tx) + (cos * ty);
-		return v;
-	}
+        GameObject projectileGO = Instantiate(element.specialAttackProjectile);
+        Projectile proj = projectileGO.GetComponent<Projectile>();
+        if (!trueDirectionalInput.Equals(Vector2.zero)) {
+            proj.direction = trueDirectionalInput;
+        } else {
+            proj.direction = transform.right * (!st.flipped ? 1 : -1);
+        }
+
+        projectileGO.transform.position = transform.position;
+
+        projectileGO.transform.position += (Vector3)proj.direction.normalized * projectileSpawnDistance;
+    }
+
+    #endregion
+
+    public void SetElement(SlimeElement newElement) {
+        element = newElement;
+
+        slimeTrail.startColor = element.trailStartColor;
+        slimeTrail.endColor = element.trailEndColor;
+
+        anim.runtimeAnimatorController = element.animationSet;
+        healthUI.fullHeartImage = element.fullHeartImage;
+        healthUI.halfHeartImage = element.halfHeartImage;
+        healthUI.emptyHeartImage = element.emptyHeartImage;
+
+        healthUIMessenger.UpdateHealthUI();
+    }
+
+    public void Die() {
+        GameManager.gameManager.EndGame();
+    }
 }

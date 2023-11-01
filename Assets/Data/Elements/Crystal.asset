@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0e7f7d2062cc28489244db4f976c884, type: 3}
+  m_Name: Crystal
+  m_EditorClassIdentifier: 
+  animationSet: {fileID: 22100000, guid: 076a158842d96c64680c8524319b99ce, type: 2}
+  fullHeartImage: {fileID: 21300000, guid: 150d4fb41e5b79841ac87b5397a781e9, type: 3}
+  halfHeartImage: {fileID: 21300000, guid: cc06a0d92391e044095d3ca76b462f6e, type: 3}
+  emptyHeartImage: {fileID: 21300000, guid: d9df64a855c418b4a9d6aedc3911723f, type: 3}
+  canSpecialAttack: 1
+  specialAttackProjectile: {fileID: 3437906859337101205, guid: d2955bddf1db6de459af62d1722bc456, type: 3}
+  groundImpactEffect: {fileID: 6801229182872263772, guid: b5a5f6e3f26f2ef41a04dacc53fe0ac7, type: 3}
+  jumpEffect: {fileID: 6801229182872263772, guid: 72185ad4f6f02ee4daac3fe3b3acd845, type: 3}
+  trailStartColor: {r: 0.9764706, g: 0.90588236, b: 0.16470589, a: 1}
+  trailEndColor: {r: 0.9764706, g: 0.90588236, b: 0.16470589, a: 0}
