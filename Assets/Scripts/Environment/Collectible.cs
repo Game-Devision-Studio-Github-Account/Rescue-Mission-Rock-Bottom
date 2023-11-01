@@ -23,6 +23,8 @@ public class Collectible : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (PlayerMovement.PlayerGO == null) return;
+        
         Vector3 playerPos = PlayerMovement.PlayerGO.transform.position;
         if (!approaching) {
             float dist = (playerPos - transform.position).magnitude;

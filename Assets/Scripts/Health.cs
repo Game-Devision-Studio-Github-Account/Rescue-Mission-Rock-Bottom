@@ -6,7 +6,10 @@ using UnityEngine.Events;
 public class Health : MonoBehaviour
 {
     public int health;
+    [HideInInspector]
     public int maxHealth;
+    [HideInInspector]
+    public bool invincible = false;
 
     [Header("Events")]
     public UnityEvent onEnable;
@@ -24,6 +27,8 @@ public class Health : MonoBehaviour
     }
 
     public int Damage(int d) {
+        if (invincible) return health;
+
         health -= d;
 
         onDamage.Invoke();
@@ -33,12 +38,5 @@ public class Health : MonoBehaviour
         }
 
         return health;
-    }
-
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.P)) {
-            Damage(1);
-        }
     }
 }

@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public HealthUI healthUI;
     public HealthUIMessenger healthUIMessenger;
     public SlopeRotation sr;
+    public Hitbox hb;
 
     public enum State {
         //State when attached to ground or walls.
@@ -97,6 +98,10 @@ public class PlayerMovement : MonoBehaviour
     public float groundPoundGravityScale = 2f;
     public TrailRenderer slimeTrail;
 
+    [Header("Invincibility")]
+    public float invulnTime = 0.5f;
+    float invulnTimer;
+
     [Header("Animation")]
     public string idleAnim = "Idle";
     public string jumpChargeAnim = "JumpCharge";
@@ -152,6 +157,10 @@ public class PlayerMovement : MonoBehaviour
             sr = GetComponent<SlopeRotation>();
         }
 
+        if (hb == null) {
+            hb = GetComponent<Hitbox>();
+        }
+
         //Defaults the state to Air since OnCollisionExit can't run on frame 1.
         state = State.Air;
 
@@ -163,6 +172,10 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame. Used to handle inputs.
     void Update()
     {
+        health.invincible = (invulnTimer > 0);
+        if (state == State.Attack) health.invincible = true;
+        invulnTimer -= Time.deltaTime;
+
         //Checks if neither the left or right keys are being pressed.
         if (!(Input.GetKey(leftInput) || Input.GetKey(rightInput))) {
             AdjustHorizontalInput();
@@ -227,6 +240,7 @@ public class PlayerMovement : MonoBehaviour
     //Runs 50 times per frame, no matter what. Eliminates the need for deltaTime.
     void FixedUpdate()
     { 
+        hb.active = (state == State.Attack);
         if (jump) {
             jumpResetTimer -= Time.fixedDeltaTime;
             if (jumpResetTimer <= 0) jump = false;
@@ -564,5 +578,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void Die() {
         GameManager.gameManager.EndGame();
+
+        Destroy(gameObject);
+    }
+
+    public void Hurt() {
+        invulnTimer = invulnTime;
     }
 }

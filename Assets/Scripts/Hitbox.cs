@@ -7,6 +7,8 @@ public class Hitbox : MonoBehaviour
     public LayerMask excludedLayers;
     public int damage;
 
+    public bool active = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,9 +24,10 @@ public class Hitbox : MonoBehaviour
     void OnCollisionEnter2D(Collision2D col)
     {
         if (!(excludedLayers == (excludedLayers | 1 << col.collider.gameObject.layer))) {
-            Health h = col.otherCollider.GetComponent<Health>();
+            Health h = col.collider.GetComponent<Health>();
             if (h != null) {
-                h.Damage(damage);
+                Debug.Log(col.collider.gameObject.name);
+                if (active) h.Damage(damage);
             }
         }
     }
