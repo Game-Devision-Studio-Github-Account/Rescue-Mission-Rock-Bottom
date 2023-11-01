@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public CircleCollider2D cc;
     ScriptAnimator sa;
     public Animator anim;
-    public SpriteRenderer sprite;
+    public SpriteTools st;
     public HealthUI healthUI;
     public HealthUIMessenger healthUIMessenger;
 
@@ -25,10 +25,6 @@ public class PlayerMovement : MonoBehaviour
         GroundPound,
         //State when attacking
         Attack
-    }
-
-    public enum SpecialAttack {
-        None
     }
 
     public State state;
@@ -54,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
     public KeyCode groundPoundInput = KeyCode.C;
     //The key needed to input an Attack
     public KeyCode attackInput = KeyCode.X;
+    public KeyCode specialAttackInput = KeyCode.V;
 
     [Header("Locomotion")]
     //Movement speed on a surface.
@@ -90,6 +87,9 @@ public class PlayerMovement : MonoBehaviour
     public float attackCooldownTimer;
     bool canAttack;
     public float attackForce = 5f;
+    [Header("Special Attacking")]
+    public float projectileSpawnDistance = 1;
+
 
     [Header("Ground Pound")]
     public float groundPoundGravityScale = 2f;
@@ -108,8 +108,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Elements")]
     public SlimeElement defaultElement;
     SlimeElement element;
-    
-
 
     void Awake() {
         PlayerGO = gameObject;
@@ -137,8 +135,8 @@ public class PlayerMovement : MonoBehaviour
 
         sa = new ScriptAnimator(anim);
 
-        if (sprite == null) {
-            sprite = GetComponentInChildren<SpriteRenderer>();
+        if (st == null) {
+            st = GetComponentInChildren<SpriteTools>();
         }
 
         if (healthUI == null) {
@@ -186,6 +184,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (state == State.Ground && Input.GetKey(attackInput) && canAttack) {
             Attack();
+        }
+
+        if (Input.GetKeyDown(specialAttackInput) && element.canSpecialAttack && canAttack) {
+            SpecialAttack();
         }
     }
 
@@ -240,10 +242,7 @@ public class PlayerMovement : MonoBehaviour
                 sa.SetState(idleAnim);
 
                 if (directionalInput.x != 0) {
-                    sprite.transform.localScale = new Vector2(
-                        directionalInput.x > 0 ? 1 : -1,
-                        sprite.transform.localScale.y
-                    );
+                    st.flipped = directionalInput.x > 0 ? false : true;
                 }
                 
 
@@ -461,6 +460,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        Collectible c = col.GetComponent<Collectible>();
+        if(c != null) c.Collect();
+    }
+
     //Lerps the rotation towards a specific value based on the rotationLerp variable.
     public void RotateTowards(Quaternion targetRotation) {
         rb.SetRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationLerp));
@@ -519,9 +524,28 @@ public class PlayerMovement : MonoBehaviour
         attackCooldownTimer = attackCooldown;
 
 
-        rb.AddForce(transform.right * (sprite.transform.localScale.x > 0 ? 1 : -1) * attackForce, ForceMode2D.Impulse);
+        rb.AddForce(transform.right * (!st.flipped ? 1 : -1) * attackForce, ForceMode2D.Impulse);
 
         state = State.Attack;
+    }
+
+    public void SpecialAttack() {
+        if (element.specialAttackProjectile == null) {
+            Debug.LogError("No Special Attack Projectile assigned to Element ScriptableObject");
+            return;
+        }
+
+        GameObject projectileGO = Instantiate(element.specialAttackProjectile);
+        Projectile proj = projectileGO.GetComponent<Projectile>();
+        if (!trueDirectionalInput.Equals(Vector2.zero)) {
+            proj.direction = trueDirectionalInput;
+        } else {
+            proj.direction = transform.right * (!st.flipped ? 1 : -1);
+        }
+
+        projectileGO.transform.position = transform.position;
+
+        projectileGO.transform.position += (Vector3)proj.direction.normalized * projectileSpawnDistance;
     }
 
     #endregion
@@ -538,5 +562,9 @@ public class PlayerMovement : MonoBehaviour
         healthUI.emptyHeartImage = element.emptyHeartImage;
 
         healthUIMessenger.UpdateHealthUI();
+    }
+
+    public void Die() {
+        GameManager.gameManager.EndGame();
     }
 }

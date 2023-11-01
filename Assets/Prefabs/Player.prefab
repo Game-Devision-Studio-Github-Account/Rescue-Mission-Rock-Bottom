@@ -117,7 +117,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   cc: {fileID: 0}
   anim: {fileID: 1741178921492359808}
-  sprite: {fileID: 0}
+  st: {fileID: 0}
   healthUI: {fileID: 0}
   healthUIMessenger: {fileID: 0}
   state: 0
@@ -128,6 +128,7 @@ MonoBehaviour:
   jumpInput: 122
   groundPoundInput: 99
   attackInput: 120
+  specialAttackInput: 118
   speed: 10
   airSpeed: 6
   groundMask:
@@ -168,6 +169,7 @@ MonoBehaviour:
   attackCooldown: 1
   attackCooldownTimer: 0
   attackForce: 5
+  projectileSpawnDistance: 1
   groundPoundGravityScale: 10
   rotationLerp: 0.2
   slimeTrail: {fileID: 4290506404898775844}
@@ -352,6 +354,7 @@ GameObject:
   - component: {fileID: 2837868494804691735}
   - component: {fileID: 8523159941667577410}
   - component: {fileID: 1741178921492359808}
+  - component: {fileID: 3810090128487286529}
   m_Layer: 7
   m_Name: Fred the Slime
   m_TagString: Player
@@ -447,6 +450,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3810090128487286529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3446158360871858099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f7eadb252448974fbdab5d67c7ba780, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flipped: 0
 --- !u!1 &3465793051787489748
 GameObject:
   m_ObjectHideFlags: 0

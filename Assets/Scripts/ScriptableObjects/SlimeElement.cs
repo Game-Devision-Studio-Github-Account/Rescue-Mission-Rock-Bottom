@@ -12,7 +12,9 @@ public class SlimeElement : ScriptableObject
     public Sprite halfHeartImage;
     public Sprite emptyHeartImage;
     [Header("Combat")]
-    public PlayerMovement.SpecialAttack specialAttack;
+    public bool canSpecialAttack = false;
+    public GameObject specialAttackProjectile;
+    //public PlayerMovement.SpecialAttack specialAttack;
     [Header("Visuals")]
     public GameObject groundImpactEffect;
     public GameObject jumpEffect;
