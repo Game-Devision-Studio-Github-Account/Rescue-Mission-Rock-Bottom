@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     public SpriteTools st;
     public CircleCollider2D cc;
     public SlopeRotation sr;
+    public Hitbox hb;
 
     public enum State {
         Idle,
@@ -18,6 +19,10 @@ public class Enemy : MonoBehaviour
 
     public State state;
 
+    [Header("AI")]
+    public bool checkEdges = true;
+    public bool active = true;
+
     [Header("Movement")]
     public float speed;
     //public float height = 1;
@@ -26,6 +31,8 @@ public class Enemy : MonoBehaviour
     public bool flipDirection;
     public float maxAngle = 30f;
     public float groundDifference;
+
+    
 
     [Header("Imminent Fall Detection")]
     public float aheadCheckDistance = 5f;
@@ -60,6 +67,7 @@ public class Enemy : MonoBehaviour
     }
 
     void FixedUpdate() {
+        if (!active) return;
         /*Vector2 playerPosition = PlayerMovement.PlayerGO.transform.position;
         Vector2 movementDirection = ((Vector3)playerPosition - (Vector3)transform.position).normalized;
 
@@ -85,7 +93,7 @@ public class Enemy : MonoBehaviour
                 bool shouldFlip = false;
                 
                 if (angle >= maxAngle) shouldFlip = true;
-                if (!CheckGroundAhead()) shouldFlip = true;
+                if (!CheckGroundAhead() && checkEdges) shouldFlip = true;
 
                 if (shouldFlip) flipDirection = !flipDirection;
 
@@ -141,5 +149,13 @@ public class Enemy : MonoBehaviour
         Vector3 p = rb.position + (Vector2.Perpendicular(groundNormal) * (float)flipMod * aheadCheckDistance);
         RaycastHit2D groundHit = Physics2D.Raycast(p, Vector2.down, aheadCheckHeight, groundMask);
         return groundHit;
+    }
+
+    public void Activate() {
+        active = true;
+    }
+
+    public void Die() {
+        Destroy(gameObject);
     }
 }
