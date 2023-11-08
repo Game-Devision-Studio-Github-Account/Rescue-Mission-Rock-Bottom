@@ -637,6 +637,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dismissInput: 32
+  noteImage: {fileID: 0}
 --- !u!1 &65843606
 GameObject:
   m_ObjectHideFlags: 0
@@ -4925,7 +4926,10 @@ MonoBehaviour:
   st: {fileID: 0}
   cc: {fileID: 0}
   sr: {fileID: 0}
+  hb: {fileID: 0}
   state: 0
+  checkEdges: 1
+  active: 1
   speed: 2
   groundMask:
     serializedVersion: 2
@@ -4949,6 +4953,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 4
   maxHealth: 4
+  invincible: 0
   onEnable:
     m_PersistentCalls:
       m_Calls:
@@ -6358,6 +6363,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lorePageUI: {fileID: 0}
+  gameOverUI: {fileID: 0}
+  restartInput: 32
+  loreNoteImages: []
 --- !u!4 &1666735554
 Transform:
   m_ObjectHideFlags: 0
