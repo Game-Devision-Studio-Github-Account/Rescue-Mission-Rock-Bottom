@@ -54,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
     //The key needed to input an Attack
     public KeyCode attackInput = KeyCode.X;
     public KeyCode specialAttackInput = KeyCode.V;
+    public KeyCode interactInput = KeyCode.Space;
 
     [Header("Locomotion")]
     //Movement speed on a surface.
@@ -110,6 +111,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Elements")]
     public SlimeElement defaultElement;
     SlimeElement element;
+    [Header("Other")]
+    bool touchingExit;
+    Exit exit;
 
     void Awake() {
         PlayerGO = gameObject;
@@ -206,6 +210,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(specialAttackInput) && element.canSpecialAttack && canAttack) {
             SpecialAttack();
+        }
+
+        if (Input.GetKeyDown(interactInput) && touchingExit) {
+            GameManager.LoadLevel(exit.buildIndex);
         }
     }
 
@@ -498,8 +506,19 @@ public class PlayerMovement : MonoBehaviour
         if(ep != null) {
             SetElement(ep.element);
         }
+
+        Exit e = col.GetComponent<Exit>();
+        if(e != null) {
+            touchingExit = true;
+            exit = e;
+        }
     }
     
+    void OnTriggerExit2D(Collider2D col)
+    {
+        Exit e = col.GetComponent<Exit>();
+        if(e != null) touchingExit = false;
+    }
 
     public bool UpsideDown() {
         return (Vector2.Dot(groundNormal, Vector2.down) > 0);

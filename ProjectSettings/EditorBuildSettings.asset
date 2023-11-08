@@ -14,10 +14,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Leaderboard.unity
     guid: 25962d17a1617ec4b9b17cf5bbbc6a32
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MenuScreen.unity
     guid: c0e1f89986b5f9e49bb334707a01814c
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/PlayerControllerTesting.unity
     guid: 145b5b9f616ee1543911eac95b93ee22
   - enabled: 0

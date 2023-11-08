@@ -57,4 +57,8 @@ public class GameManager : MonoBehaviour
         lorePageUI.noteImage.sprite = loreNoteImages[a];
         lorePageUI.gameObject.SetActive(true);
     }
+
+    public static void LoadLevel(int buildIndex) {
+        SceneManager.LoadScene(buildIndex);
+    }
 }

@@ -22,6 +22,13 @@ public class Enemy : MonoBehaviour
     [Header("AI")]
     public bool checkEdges = true;
     public bool active = true;
+    public bool flying = false;
+
+    public enum PatrolMode {
+        Ground,
+        Air
+    }
+    public Transform[] airPatrolPoints;
 
     [Header("Movement")]
     public float speed;
@@ -75,7 +82,7 @@ public class Enemy : MonoBehaviour
 
         rb.MovePosition((Vector2)transform.position + (movementDirection * speed * 0.01f));*/
 
-        if (!CheckGround()) {
+        if (!CheckGround() && !flying) {
             state = State.Fall;
         }
 
