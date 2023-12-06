@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 5947303688461169241}
   m_Layer: 0
   m_Name: Goblin
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2866538092504845494}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -115,15 +115,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 1
   maxHealth: 0
+  invincible: 0
   onEnable:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8240733161469800391, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: Attack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onDamage:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2866538092504845494}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: Hurt
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onDeath:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5298454604033693501}
+        m_TargetAssemblyTypeName: Enemy, Assembly-CSharp
+        m_MethodName: Die
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5298454604033693501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,12 +175,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 3464684209643628646}
   st: {fileID: 0}
-  cc: {fileID: 0}
-  sr: {fileID: 0}
-  hb: {fileID: 0}
-  state: 0
+  cc: {fileID: 1078680294395279855}
+  sr: {fileID: 4894909434515067003}
+  hb: {fileID: 5947303688461169241}
+  state: 2
   checkEdges: 1
   active: 1
+  flying: 0
+  airPatrolPoints: []
   speed: 2
   groundMask:
     serializedVersion: 2
@@ -153,6 +192,7 @@ MonoBehaviour:
   groundDifference: 0
   aheadCheckDistance: 1
   aheadCheckHeight: 2
+  drop: {fileID: 0}
 --- !u!114 &4894909434515067003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,7 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bf3167479bc42e4da32c78523664c21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  rb: {fileID: 3464684209643628646}
   rotationLerp: 0.2
 --- !u!61 &3866552055649036012
 BoxCollider2D:
@@ -196,7 +236,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -228,6 +268,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   damage: 1
+  active: 1
 --- !u!1 &7271490031897257990
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,8 +281,8 @@ GameObject:
   - component: {fileID: 6733647573069561082}
   - component: {fileID: 6049630943001620647}
   m_Layer: 0
-  m_Name: Image
-  m_TagString: Untagged
+  m_Name: Goblin
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

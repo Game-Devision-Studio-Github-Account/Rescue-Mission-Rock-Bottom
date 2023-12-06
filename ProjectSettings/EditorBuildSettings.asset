@@ -24,10 +24,10 @@ EditorBuildSettings:
     path: Assets/Scenes/Settings.unity
     guid: 2531d2708325a05419ab592cff6cd278
   - enabled: 1
-    path: Assets/Scenes/Levels/Level_Rock.unity
+    path: Assets/Scenes/Level_Rock.unity
     guid: c6fb3a2f1017f634eab5811e220b3866
   - enabled: 1
-    path: Assets/Scenes/Levels/Level_Ice.unity
+    path: Assets/Scenes/Level_Ice.unity
     guid: 459c6433ec9a1654cb34d57605055217
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: b18491ac9ed82bc4f81cf00e226addaf, type: 2}
