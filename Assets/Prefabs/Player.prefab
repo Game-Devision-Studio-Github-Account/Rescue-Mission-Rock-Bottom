@@ -115,22 +115,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96b224fdc62d9814795328eebf3c0d8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  rb: {fileID: 1960913264387088904}
   cc: {fileID: 0}
   anim: {fileID: 1741178921492359808}
   st: {fileID: 0}
-  health: {fileID: 0}
-  healthUI: {fileID: 0}
-  healthUIMessenger: {fileID: 0}
+  health: {fileID: 5785594110984117023}
+  healthUI: {fileID: 8469226628963629668}
+  healthUIMessenger: {fileID: 7325591126040118056}
   sr: {fileID: 0}
   hb: {fileID: 0}
   hs: {fileID: 0}
   state: 0
-  leftInput: 276
-  rightInput: 275
-  upInput: 273
-  downInput: 274
-  jumpInput: 122
+  leftInput: 97
+  rightInput: 100
+  upInput: 119
+  downInput: 115
+  jumpInput: 32
   groundPoundInput: 99
   attackInput: 120
   specialAttackInput: 118
@@ -307,7 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bf3167479bc42e4da32c78523664c21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  rb: {fileID: 1960913264387088904}
   rotationLerp: 0.2
 --- !u!114 &4243363346059209541
 MonoBehaviour:
