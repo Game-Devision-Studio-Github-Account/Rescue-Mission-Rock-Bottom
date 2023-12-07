@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     public HealthUIMessenger healthUIMessenger;
     public SlopeRotation sr;
     public Hitbox hb;
+    public Hitstop hs;
 
     public enum State {
         //State when attached to ground or walls.
@@ -91,6 +92,7 @@ public class PlayerMovement : MonoBehaviour
     public float attackCooldownTimer;
     bool canAttack;
     public float attackForce = 5f;
+    public float attackHitstop = 0.05f;
     [Header("Special Attacking")]
     public float projectileSpawnDistance = 1;
 
@@ -329,7 +331,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void HandleGround() {
         if (groundCount == 0) {
-            if (state == State.GroundPound) return;
+            if (state == State.GroundPound || state == State.Attack) return;
             
             if (state == State.Ground || state == State.JumpCharge) {
                 //RaycastHit2D gc = Physics2D.CircleCast(rb.position + (rb.velocity * Time.fixedDeltaTime), cc.radius + 0.01f + groundCastRadius, Vector2.zero, 0, groundMask);
@@ -507,6 +509,11 @@ public class PlayerMovement : MonoBehaviour
             SetElement(ep.element);
         }
 
+        HealthPickup hp = col.GetComponent<HealthPickup>();
+        if(hp != null) {
+            health.Heal(hp.healing);
+        }
+
         Exit e = col.GetComponent<Exit>();
         if(e != null) {
             touchingExit = true;
@@ -608,5 +615,9 @@ public class PlayerMovement : MonoBehaviour
 
     public void Hurt() {
         invulnTimer = invulnTime;
+    }
+
+    public void HurtFlash() {
+        st.Flash(Color.red, 0.1f);
     }
 }

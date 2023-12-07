@@ -8,13 +8,17 @@ public class SpriteTools : MonoBehaviour
         Right,
         Left
     }
+    
+    public SpriteRenderer sprite;
 
     public Alignment initialAlignment = Alignment.Right;
     public bool flipped;
+    bool waiting;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -27,5 +31,26 @@ public class SpriteTools : MonoBehaviour
             a * b,
             transform.localScale.y
         );
+    }
+
+    public void Flash(Color color, float duration) {
+        
+        if (waiting) return;
+        
+        Color originalColor = sprite.color;
+        sprite.color = color;
+
+        StartCoroutine(FlashRoutine(originalColor, duration));
+        
+    }
+
+    IEnumerator FlashRoutine(Color color, float duration)
+    {
+        waiting = true;
+        Debug.Log("bazing");
+        yield return new WaitForSecondsRealtime(duration);
+        sprite.color = color;
+        Debug.Log("a");
+        waiting = false;
     }
 }

@@ -9,10 +9,15 @@ public class Hitbox : MonoBehaviour
 
     public bool active = true;
 
+    public float hitstop = 0.05f;
+
+    public Hitstop hs;
+    public GameObject hitEffect;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        hs = Hitstop.hitstop;
     }
 
     // Update is called once per frame
@@ -27,7 +32,21 @@ public class Hitbox : MonoBehaviour
             Health h = col.collider.GetComponent<Health>();
             if (h != null) {
                 Debug.Log(col.collider.gameObject.name);
-                if (active) h.Damage(damage);
+                
+                if (active && !h.invincible) {
+                    hs.Stop(hitstop);
+
+                    if (hitEffect != null) {
+                        GameObject hitGO = Instantiate(hitEffect);
+                        hitGO.transform.position = transform.position;
+                        hitGO.transform.position = col.contacts[0].point;
+                    }
+
+                    h.Damage(damage);
+                }
+
+                
+                
             }
         }
     }

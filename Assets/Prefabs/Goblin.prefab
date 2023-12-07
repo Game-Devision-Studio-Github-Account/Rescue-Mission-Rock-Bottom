@@ -115,6 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 1
   maxHealth: 0
+  invincible: 0
   onEnable:
     m_PersistentCalls:
       m_Calls: []
@@ -144,6 +145,8 @@ MonoBehaviour:
   state: 0
   checkEdges: 1
   active: 1
+  flying: 0
+  airPatrolPoints: []
   speed: 2
   groundMask:
     serializedVersion: 2
@@ -153,6 +156,7 @@ MonoBehaviour:
   groundDifference: 0
   aheadCheckDistance: 1
   aheadCheckHeight: 2
+  drop: {fileID: 4711716361615771958, guid: ae9ce1bbb38d2d64d83f86c2b1482d91, type: 3}
 --- !u!114 &4894909434515067003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,6 +232,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   damage: 1
+  active: 1
+  hitstop: 0.05
+  hs: {fileID: 0}
+  hitEffect: {fileID: 2438162900212439058, guid: 3fa9c7e6342ae64489ea466d2485f011, type: 3}
 --- !u!1 &7271490031897257990
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,5 +333,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f7eadb252448974fbdab5d67c7ba780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprite: {fileID: 0}
   initialAlignment: 1
   flipped: 0

@@ -124,6 +124,7 @@ MonoBehaviour:
   healthUIMessenger: {fileID: 0}
   sr: {fileID: 0}
   hb: {fileID: 0}
+  hs: {fileID: 0}
   state: 0
   leftInput: 276
   rightInput: 275
@@ -133,6 +134,7 @@ MonoBehaviour:
   groundPoundInput: 99
   attackInput: 120
   specialAttackInput: 118
+  interactInput: 32
   speed: 10
   airSpeed: 6
   groundMask:
@@ -173,6 +175,7 @@ MonoBehaviour:
   attackCooldown: 0.2
   attackCooldownTimer: 0
   attackForce: 8
+  attackHitstop: 0.05
   projectileSpawnDistance: 1
   groundPoundGravityScale: 10
   slimeTrail: {fileID: 4290506404898775844}
@@ -230,6 +233,18 @@ MonoBehaviour:
       - m_Target: {fileID: 8240733161469800391}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: Hurt
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8240733161469800391}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: HurtFlash
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -311,6 +326,9 @@ MonoBehaviour:
     m_Bits: 128
   damage: 5
   active: 1
+  hitstop: 0.05
+  hs: {fileID: 0}
+  hitEffect: {fileID: 2438162900212439058, guid: 3fa9c7e6342ae64489ea466d2485f011, type: 3}
 --- !u!1 &2884342886561759565
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,6 +523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f7eadb252448974fbdab5d67c7ba780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprite: {fileID: 0}
   initialAlignment: 0
   flipped: 0
 --- !u!1 &3465793051787489748

@@ -39,4 +39,12 @@ public class Health : MonoBehaviour
 
         return health;
     }
+
+    public int Heal(int h) {
+        health += h;
+
+        if (health > maxHealth) health = maxHealth;
+
+        return health;
+    }
 }
