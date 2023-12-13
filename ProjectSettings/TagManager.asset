@@ -10,6 +10,7 @@ TagManager:
   - EventSystem
   - Hitstop
   - Settings
+  - Menu
   layers:
   - Default
   - TransparentFX
