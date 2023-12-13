@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2766624703638203837
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8352797117771527450}
+  - component: {fileID: 3707295079902980077}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8352797117771527450
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2766624703638203837}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3707295079902980077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2766624703638203837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a328a54e1f0cdb94a83f7c8fa2e8248a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lorePageUI: {fileID: 0}
+  gameOverUI: {fileID: 0}
+  restartInput: 32
+  loreNoteImages:
+  - {fileID: 21300000, guid: 0a77c6928dc36b14380e87a35d2a1db8, type: 3}
+  - {fileID: 21300000, guid: e472bc9445c61464592d604e231cf25b, type: 3}
+  - {fileID: 21300000, guid: 8be94638d86d32f4bb472ec98c4deeeb, type: 3}
+  - {fileID: 21300000, guid: 43b7230b835e7bf4b9ae49defbfd1158, type: 3}
+  - {fileID: 21300000, guid: bf6dc769805c94b47bc5a98dd41a4bb3, type: 3}
+  - {fileID: 21300000, guid: 2f91fa9f83c775f4ab15610d57d4ed83, type: 3}
+  - {fileID: 21300000, guid: 0aec34d46378aaf47818689517a28972, type: 3}
+  - {fileID: 21300000, guid: 7aace49fa88a7064f84d0e07ad31ac98, type: 3}
