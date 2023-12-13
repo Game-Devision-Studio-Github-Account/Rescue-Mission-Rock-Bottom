@@ -8,6 +8,7 @@ TagManager:
   - PracticeDummy
   - Enemy
   - EventSystem
+  - Hitstop
   layers:
   - Default
   - TransparentFX
