@@ -2569,6 +2569,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96b224fdc62d9814795328eebf3c0d8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &465509110 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4243363346059209541, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
+  m_PrefabInstance: {fileID: 465509108}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdd5a8a0a74431546a6d9656b7f26e3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &465509111 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3810090128487286529, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
+  m_PrefabInstance: {fileID: 465509108}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f7eadb252448974fbdab5d67c7ba780, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &471615960
 GameObject:
   m_ObjectHideFlags: 0
@@ -4670,7 +4692,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bf3167479bc42e4da32c78523664c21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  rb: {fileID: 1114373946}
   rotationLerp: 0.2
 --- !u!114 &1114373943
 MonoBehaviour:
@@ -4685,10 +4707,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 1114373946}
-  st: {fileID: 0}
+  st: {fileID: 465509111}
   cc: {fileID: 0}
-  sr: {fileID: 0}
-  hb: {fileID: 0}
+  sr: {fileID: 1114373942}
+  hb: {fileID: 465509110}
   state: 0
   checkEdges: 1
   active: 1
@@ -4736,7 +4758,19 @@ MonoBehaviour:
         m_CallState: 2
   onDamage:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onDeath:
     m_PersistentCalls:
       m_Calls:
