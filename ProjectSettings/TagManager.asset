@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - EventSystem
   - Hitstop
+  - Settings
   layers:
   - Default
   - TransparentFX
