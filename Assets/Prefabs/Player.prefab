@@ -118,12 +118,12 @@ MonoBehaviour:
   rb: {fileID: 1960913264387088904}
   cc: {fileID: 0}
   anim: {fileID: 1741178921492359808}
-  st: {fileID: 0}
+  st: {fileID: 3810090128487286529}
   health: {fileID: 5785594110984117023}
   healthUI: {fileID: 8469226628963629668}
   healthUIMessenger: {fileID: 7325591126040118056}
-  sr: {fileID: 0}
-  hb: {fileID: 0}
+  sr: {fileID: 2073968749577428457}
+  hb: {fileID: 4243363346059209541}
   hs: {fileID: 0}
   state: 0
   leftInput: 97

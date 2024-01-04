@@ -134,16 +134,16 @@ MonoBehaviour:
   onDamage:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2866538092504845494}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
-        m_MethodName: Hurt
-        m_Mode: 1
+      - m_Target: {fileID: 5947303688461169241}
+        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
+        m_MethodName: set_name
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: EnemyDmg
           m_BoolArgument: 0
         m_CallState: 2
   onDeath:
@@ -174,13 +174,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 3464684209643628646}
-  st: {fileID: 0}
+  st: {fileID: 6049630943001620647}
   cc: {fileID: 1078680294395279855}
   sr: {fileID: 4894909434515067003}
   hb: {fileID: 5947303688461169241}
   state: 2
   checkEdges: 1
-  active: 1
+  active: 0
   flying: 0
   airPatrolPoints: []
   speed: 2
@@ -299,7 +299,7 @@ Transform:
   m_GameObject: {fileID: 7271490031897257990}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.487, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -369,6 +369,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f7eadb252448974fbdab5d67c7ba780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
+  sprite: {fileID: 6733647573069561082}
   initialAlignment: 1
   flipped: 0

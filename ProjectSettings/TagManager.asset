@@ -11,6 +11,8 @@ TagManager:
   - Hitstop
   - Settings
   - Menu
+  - Canvas
+  - Exit
   layers:
   - Default
   - TransparentFX
