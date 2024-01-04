@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 3319925}
   m_Layer: 0
   m_Name: EventSystem
-  m_TagString: Untagged
+  m_TagString: EventSystem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -379,7 +379,7 @@ GameObject:
   - component: {fileID: 32533107}
   - component: {fileID: 32533108}
   m_Layer: 0
-  m_Name: Crystal Enemy (1)
+  m_Name: Turtle(1)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -463,8 +463,8 @@ GameObject:
   - component: {fileID: 36514671}
   - component: {fileID: 36514672}
   m_Layer: 0
-  m_Name: Ice Enemy (1)
-  m_TagString: Untagged
+  m_Name: Ice Bat
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -587,7 +587,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dismissInput: 32
-  noteImage: {fileID: 0}
+  noteImage: {fileID: 68188007}
 --- !u!1 &65843606
 GameObject:
   m_ObjectHideFlags: 0
@@ -758,7 +758,7 @@ GameObject:
   - component: {fileID: 72788816}
   - component: {fileID: 72788817}
   m_Layer: 0
-  m_Name: Crystal Enemy (6)
+  m_Name: Turtle(6)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -860,14 +860,16 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1871271732}
-  - {fileID: 1242957844}
-  - {fileID: 791044381}
-  - {fileID: 190227801}
+  - {fileID: 303810821}
   - {fileID: 1649831922}
+  - {fileID: 791044381}
+  - {fileID: 1534964858}
+  - {fileID: 182635473}
+  - {fileID: 1242957844}
+  - {fileID: 1871271732}
+  - {fileID: 190227801}
   - {fileID: 1318624117}
   - {fileID: 1816929334}
-  - {fileID: 1534964858}
   - {fileID: 1223683391}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1140,8 +1142,8 @@ GameObject:
   - component: {fileID: 155912493}
   - component: {fileID: 155912494}
   m_Layer: 0
-  m_Name: Ice Enemy (3)
-  m_TagString: Untagged
+  m_Name: Ice Bat(2)
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1393,7 +1395,7 @@ RectTransform:
   m_Children:
   - {fileID: 1565625410}
   - {fileID: 51393842}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 78874043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1562,7 +1564,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -5
-  m_Sprite: {fileID: 21300000, guid: cf6d8b9cb79c04d7086f701cfbd032bb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0010a03b88011d34a8dcadf0f2c011b1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1777,7 +1779,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 78874043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &307071444
 GameObject:
@@ -2370,46 +2372,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5785594110984117023, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
-      propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5785594110984117023, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
-      propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5785594110984117023, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
-      propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 465509109}
-    - target: {fileID: 5785594110984117023, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
-      propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5785594110984117023, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
-      propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: Die
-      objectReference: {fileID: 0}
-    - target: {fileID: 5785594110984117023, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
-      propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: PlayerMovement, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 5785594110984117023, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
-      propertyPath: onDeath.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 6391724965144899607, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
-      propertyPath: elementTestSets.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6391724965144899607, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
-      propertyPath: elementTestSets.Array.data[2].input
-      value: 51
-      objectReference: {fileID: 0}
-    - target: {fileID: 6391724965144899607, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
-      propertyPath: elementTestSets.Array.data[2].element
-      value: 
-      objectReference: {fileID: 11400000, guid: 88d426595f4e03941ab15d1754678f2c, type: 2}
     - target: {fileID: 6820730126509335853, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2434,6 +2396,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7253474710441304789, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 581117228}
+    - target: {fileID: 8240733161469800391, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
+      propertyPath: cc
+      value: 
+      objectReference: {fileID: 465509109}
     - target: {fileID: 9000598289343316129, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2479,17 +2449,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
---- !u!114 &465509109 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8240733161469800391, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
+--- !u!58 &465509109 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 5158674038842983407, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
   m_PrefabInstance: {fileID: 465509108}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96b224fdc62d9814795328eebf3c0d8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &465509110 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4243363346059209541, guid: a7c4fd1c008fcaa4da910ba4d200795d, type: 3}
@@ -2523,7 +2487,7 @@ GameObject:
   - component: {fileID: 471615961}
   - component: {fileID: 471615962}
   m_Layer: 0
-  m_Name: Crystal Enemy
+  m_Name: Turtle
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2851,7 +2815,7 @@ GameObject:
   - component: {fileID: 563531381}
   - component: {fileID: 563531382}
   m_Layer: 0
-  m_Name: Crystal Enemy (7)
+  m_Name: Turtle(7)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3208,8 +3172,8 @@ GameObject:
   - component: {fileID: 658660183}
   - component: {fileID: 658660184}
   m_Layer: 0
-  m_Name: Ice Enemy (2)
-  m_TagString: Untagged
+  m_Name: Ice Bat(1)
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3544,8 +3508,8 @@ GameObject:
   - component: {fileID: 684536515}
   - component: {fileID: 684536516}
   m_Layer: 0
-  m_Name: Ice Enemy (4)
-  m_TagString: Untagged
+  m_Name: Ice Bat(3)
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4658,7 +4622,7 @@ GameObject:
   - component: {fileID: 1223683391}
   m_Layer: 0
   m_Name: Pits
-  m_TagString: Untagged
+  m_TagString: Pits
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4689,7 +4653,7 @@ GameObject:
   - component: {fileID: 1230036590}
   - component: {fileID: 1230036591}
   m_Layer: 0
-  m_Name: Crystal Enemy (4)
+  m_Name: Turtle(4)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4906,8 +4870,8 @@ GameObject:
   - component: {fileID: 1329417967}
   - component: {fileID: 1329417968}
   m_Layer: 0
-  m_Name: Ice Enemy (5)
-  m_TagString: Untagged
+  m_Name: Ice Bat(4)
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5376,7 +5340,7 @@ GameObject:
   - component: {fileID: 1542893307}
   - component: {fileID: 1542893308}
   m_Layer: 0
-  m_Name: Crystal Enemy (5)
+  m_Name: Turtle(5)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5549,7 +5513,7 @@ GameObject:
   - component: {fileID: 1587698782}
   - component: {fileID: 1587698783}
   m_Layer: 0
-  m_Name: Crystal Enemy (3)
+  m_Name: Turtle(3)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7043,7 +7007,7 @@ GameObject:
   - component: {fileID: 1864337430}
   - component: {fileID: 1864337431}
   m_Layer: 0
-  m_Name: Crystal Enemy (2)
+  m_Name: Turtle(2)
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7929,10 +7893,8 @@ SceneRoots:
   - {fileID: 1666735554}
   - {fileID: 581117229}
   - {fileID: 465509108}
-  - {fileID: 303810821}
   - {fileID: 417407982}
   - {fileID: 78874043}
-  - {fileID: 182635473}
   - {fileID: 3319927}
   - {fileID: 1565126584}
   - {fileID: 904745543}

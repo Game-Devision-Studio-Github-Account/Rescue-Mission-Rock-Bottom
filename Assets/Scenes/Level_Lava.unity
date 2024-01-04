@@ -1307,7 +1307,7 @@ GameObject:
   - component: {fileID: 828081277}
   m_Layer: 0
   m_Name: Level
-  m_TagString: Untagged
+  m_TagString: GameLevel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1700,8 +1700,8 @@ Transform:
   m_GameObject: {fileID: 1187096653}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 22, y: -137, z: 0}
-  m_LocalScale: {x: 31.958712, y: 56.997036, z: 1}
+  m_LocalPosition: {x: 30, y: 5, z: 0}
+  m_LocalScale: {x: 37.185635, y: 49.564533, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2054388469}
@@ -2064,7 +2064,7 @@ GameObject:
   - component: {fileID: 1533921953}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: Canvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3584,9 +3584,25 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8043964042033748828, guid: 550ae3c0ec71f2c489cf2996cf3eacdc, type: 3}
+      propertyPath: cc
+      value: 
+      objectReference: {fileID: 5158674039008637614}
+    - target: {fileID: 8043964042033748828, guid: 550ae3c0ec71f2c489cf2996cf3eacdc, type: 3}
+      propertyPath: hb
+      value: 
+      objectReference: {fileID: 4243363346157541892}
+    - target: {fileID: 8043964042033748828, guid: 550ae3c0ec71f2c489cf2996cf3eacdc, type: 3}
       propertyPath: hs
       value: 
       objectReference: {fileID: 337161955}
+    - target: {fileID: 8043964042033748828, guid: 550ae3c0ec71f2c489cf2996cf3eacdc, type: 3}
+      propertyPath: sr
+      value: 
+      objectReference: {fileID: 2073968749474835624}
+    - target: {fileID: 8043964042033748828, guid: 550ae3c0ec71f2c489cf2996cf3eacdc, type: 3}
+      propertyPath: st
+      value: 
+      objectReference: {fileID: 3810090127516153408}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3708,10 +3724,10 @@ SceneRoots:
   - {fileID: 1943458544}
   - {fileID: 2014812021}
   - {fileID: 2386384147764356433}
+  - {fileID: 337161956}
   - {fileID: 1655967601}
   - {fileID: 828081277}
   - {fileID: 307837264}
   - {fileID: 2054388469}
   - {fileID: 1533921956}
   - {fileID: 628172899}
-  - {fileID: 337161956}
